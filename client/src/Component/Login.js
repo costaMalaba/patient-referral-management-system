@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 
 const Login = () => {
   return (
@@ -24,22 +25,25 @@ const Login = () => {
                     placeholder="Username"
                     className="form-control-lg text-center fw-bold border-0 rounded-0"
                     id="username"
+                    required
                   />
                 </div>
-                <div className="mb-5">
+                <div className="mb-3">
                   <input
                     type="password"
                     placeholder="Password"
                     className="form-control-lg text-center fw-bold border-0 rounded-0"
                     id="password"
+                    required
                   />
                 </div>
                 <button
                   type="submit"
-                  className="btn btn-outline-success btn-lg"
+                  className="btn btn-outline-success btn-lg mb-3"
                 >
                   Login
-                </button>
+                </button> <br />
+                <span className="fw-bold">Don't Have an Account? <Link to="/register">Register</Link></span>
               </form>
             </div>
           </div>
