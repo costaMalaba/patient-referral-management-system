@@ -4,8 +4,26 @@
   height: 100vh;
 }
 
+.cover-2, .navbar {
+  background: linear-gradient(108.67deg, rgba(0, 156, 222, 0.44) 18.18%, rgba(217, 217, 217, 0.84) 99.4%);
+  background-size: cover;
+}
+
+.cover-2 ul li:hover {
+  background-color: rgb(218, 213, 213);
+  border-radius: 5px;
+}
+
+.link {
+  text-decoration: none;
+  color: white;
+}
+
+.link:hover {
+  background-color: gainsboro;
+}
+
 .header-1 {
-  filter: drop-shadow(0px 4px 10px #333333);
   background-color: #009CDE;
   height: 124px;
 }
@@ -42,11 +60,11 @@
 
 .login {
   font-family: 'Inter';
-font-style: normal;
-font-weight: 700;
-font-size: 32px;
-line-height: 64px;
-/* or 200% */
+  font-style: normal;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 64px;
+  /* or 200% */
 
 text-align: center;
 
