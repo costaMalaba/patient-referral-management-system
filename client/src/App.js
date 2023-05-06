@@ -7,16 +7,38 @@ import "react-toastify/dist/ReactToastify.css";
 import Login from "./Component/Login";
 import PatientRegister from "./Component/Patient_Register";
 import DoctorRegister from "./Component/Doctor_register";
+import DoctorDetails from "./Component/DoctorDetails";
+import EditDoctor from "./Component/EditDoctor";
 import Dashboard from "./Component/Dashboard/Dashboard";
+import Home from "./Component/Dashboard/Home.jsx";
 
 const router = createBrowserRouter([
   {
-    path: "/login",
+    path: "/",
     element: <Login />,
   },
   {
     path: "/dashboard",
     element: <Dashboard />,
+    children: [
+      {
+        path: "/dashboard/home",
+        element: <Home />
+      },
+      {
+        path: "/dashboard/view",
+        element: <DoctorDetails />
+      },
+      {
+        path: "/dashboard/doctor",
+        element: <DoctorRegister />,
+      },
+      {
+        path: "/dashboard/editDoctor/:id",
+        element: <EditDoctor />,
+      },
+      
+    ]
   },
   {
     path: "/register/patient",

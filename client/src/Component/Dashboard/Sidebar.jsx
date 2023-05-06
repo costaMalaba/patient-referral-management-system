@@ -34,12 +34,11 @@ const Sidebar = () => {
                                 <h1 className="modal-title fs-5 text-primary" id="staticBackdropLabel">Doctor Form</h1>
                                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <div className="modal-body">
+                            <div className="modal-body bg-light">
                                 <DoctorRegister />
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary btn-lg fw-bold" data-bs-dismiss="modal">Close</button>
-                                <button type="button" classname="btn btn-success btn-lg fw-bold">Register</button>
                             </div>
                             </div>
                         </div>
@@ -47,7 +46,7 @@ const Sidebar = () => {
                     </li>
 
                     <li className="nav-item p-2">
-                        <Link className="link p-1" to="">
+                        <Link className="link p-1" to="/">
                             <i className="bi bi-table me-3 fs-4"></i>
                             <span className="fs-4"><strong>Table</strong></span>
                         </Link>

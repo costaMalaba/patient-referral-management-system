@@ -4,7 +4,7 @@
   height: 100vh;
 }
 
-.cover-2, .navbar {
+.sidebar, .content {
   background: linear-gradient(108.67deg, rgba(0, 156, 222, 0.44) 18.18%, rgba(217, 217, 217, 0.84) 99.4%);
   background-size: cover;
 }
@@ -42,7 +42,7 @@
 }
 
 .card {
-  height: 600px;
+  height: 60vh;
   background: linear-gradient(108.67deg, rgba(0, 156, 222, 0.44) 18.18%, rgba(217, 217, 217, 0.84) 99.4%);
 }
 
@@ -71,4 +71,10 @@ text-align: center;
 /* sec main color */
 
 color: #0474ED;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Lato&family=Vina+Sans&display=swap');
+
+* {
+  font-family: 'Lato', sans-serif;
 }

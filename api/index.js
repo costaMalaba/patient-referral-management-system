@@ -3,8 +3,11 @@ import dotenv from "dotenv";
 import getDoctor from "./routes/doctors.js";
 import addDoctor from "./routes/doctors.js";
 import logIn from "./routes/auth.js"
+import getAllHospital from "./routes/hospital.js";
+import getSingleDoctor from "./routes/doctors.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import editDoctor from "./routes/doctors.js";
 
 dotenv.config();
 const app = express();
@@ -14,12 +17,15 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
     origin: "http://localhost:3000",
-    methods: ["POST, GET"],
+    methods: ["POST", "GET", "PUT"],
     credentials: true
 }))
-app.use("/api/doctor",getDoctor);
+app.use("/api/doctor", getDoctor);
+app.use("/api/doctor/", getSingleDoctor);
 app.use("/api/doctor", addDoctor);
 app.use("/login", logIn);
+app.use("/hospital", getAllHospital);
+app.use("/editDoctor/", editDoctor)
 
 const PORT = process.env.PORT || 5000
 
