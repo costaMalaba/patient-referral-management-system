@@ -15,7 +15,6 @@ const Login = () => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-
   axios.defaults.withCredentials = true;
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,8 +23,10 @@ const Login = () => {
         .post("http://localhost:8800/login/auth/", inputs)
         .then((res) => {
           if (res.data.Status === "Success") {
-            navigate("/dashboard/home");
-            toast.success("Logged In successfully!!");
+            setTimeout(() => {
+              navigate("/dashboard/home");
+              toast.success(res.data.Message);
+            }, 500);
           } else {
             toast.warning(res.data.Error);
           }
@@ -79,18 +80,9 @@ const Login = () => {
                     required
                   />
                 </div>
-                <button
-                  className="btn btn-outline-success btn-lg fw-bold mb-3 w-25"
-                >
+                <button className="btn btn-outline-success btn-lg fw-bold mb-3 w-25">
                   Login
-                </button>{" "}
-                <br />
-                <span className="fw-bold">
-                  Don't Have an Account?{" "}
-                  <Link className="text-decoration-none" to="/register/doctor">
-                    Register
-                  </Link>
-                </span>
+                </button>
               </form>
             </div>
           </div>

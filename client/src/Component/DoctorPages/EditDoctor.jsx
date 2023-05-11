@@ -10,6 +10,8 @@ const EditDoctor = () => {
     surname: "",
     specialization: "",
     age: "",
+    gender: "",
+    phone_no: "",
     username: "",
     password: "",
     email: "",
@@ -36,6 +38,8 @@ const EditDoctor = () => {
           surname: res.data.Result[0].surname,
           specialization: res.data.Result[0].specialization,
           age: res.data.Result[0].age,
+          gender: res.data.Result[0].gender,
+          phone_no: res.data.Result[0].phone_no,
           username: res.data.Result[0].username,
           password: res.data.Result[0].password,
           email: res.data.Result[0].email,
@@ -137,11 +141,11 @@ const EditDoctor = () => {
 
           <div className="row mb-5">
             <div className="col-6">
-              <label for="surname" className="form-label fw-bold">
+              <label for="gender" className="form-label fw-bold">
                 Gender:
               </label>
-              <select className="form-select text-center" required>
-                <option selected defaultValue={"Uknown"} disabled>
+              <select className="form-select text-center" id="gender" name="gender" value={data.gender} onChange={handleChange} required>
+                <option defaultValue={"Uknown"} disabled>
                   Select Here
                 </option>
                 <option value={"M"}>MALE</option>
@@ -158,25 +162,36 @@ const EditDoctor = () => {
                 placeholder="eg. 075444.."
                 className="form-control text-center"
                 id="phone_no"
+                name="phone_no"
+                onChange={handleChange}
+                value={data.phone_no}
                 required
               />
             </div>
           </div>
 
           <div className="row mb-5">
-            <div className="col-6">
+          <div className="col-6">
               <label for="specialization" className="form-label fw-bold">
                 Specialization:
               </label>
-              <input
-                type="text"
-                className="form-control text-center"
+              <select
+                className="form-select text-center"
                 id="specialization"
                 name="specialization"
                 value={data.specialization}
                 onChange={handleChange}
                 required
-              />
+              >
+                <option selected defaultValue={"Uknown"} disabled>
+                  Select Here
+                </option>
+                <option value={"Cardiology"}>Cardiology</option>
+                <option value={"Dermatology"}>Dermatology</option>
+                <option value={"Endocrinology"}>Endocrinology</option>
+                <option value={"Gastroenterology"}>Gastroenterology</option>
+                <option value={"Neurology"}>Neurology</option>
+              </select>
             </div>
 
             <div className="col-6">

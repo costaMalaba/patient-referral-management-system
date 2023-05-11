@@ -1,5 +1,4 @@
 import React from "react";
-import { chart } from "chart.js";
 import { Line } from "react-chartjs-2";
 
 const LineChart = () => {
@@ -22,4 +21,5 @@ const LineChart = () => {
         </div>
     )
 }
+
 export default LineChart;
