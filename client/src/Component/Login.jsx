@@ -9,31 +9,28 @@ const Login = () => {
     password: "",
   });
 
-  const [error, setError] = useState(null);
-
   const navigate = useNavigate();
 
-  const handleChange = e => {
-    setInputs(prev => ({...prev, [e.target.name]: e.target.value}))
+  const handleChange = (e) => {
+    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
-axios.defaults.withCredentials = true;
-  const handleSubmit = async e => {
+
+  axios.defaults.withCredentials = true;
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8800/login/auth/", inputs)
-      .then(res => {
-        if(res.data.Status === "A_Success") {
-          navigate("/dashboard");
-          toast.success("Logged In successfully!!");
-        } else {
-          toast.warning(res.data.Message);
-        }
-
-        if(res.data.Status === "D_Success") {
-          navigate("/register/doctor");
-          toast.success("Logged In successfully!!");
-        }
-      })
+      await axios
+        .post("http://localhost:8800/login/auth/", inputs)
+        .then((res) => {
+          if (res.data.Status === "Success") {
+            setTimeout(() => {
+              navigate("/dashboard/home");
+              toast.success(res.data.Message);
+            }, 500);
+          } else {
+            toast.warning(res.data.Error);
+          }
+        });
       //console.log(res);
     } catch (error) {
       console.log(error);
@@ -41,7 +38,7 @@ axios.defaults.withCredentials = true;
     }
   };
 
-  console.log(inputs)
+  console.log(inputs);
 
   return (
     <div className="container-fluid cover-1">
@@ -59,7 +56,7 @@ axios.defaults.withCredentials = true;
         <div className="col-6">
           <div className="card border-0 py-5 shadow-lg">
             <div className="card-body">
-              <form className="text-center">
+              <form onSubmit={handleSubmit} className="text-center">
                 <h1 className="login">Login Here</h1>
                 <div className="mb-5 mt-5">
                   <input
@@ -83,14 +80,9 @@ axios.defaults.withCredentials = true;
                     required
                   />
                 </div>
-                <button
-                  onClick={handleSubmit}
-                  className="btn btn-outline-success btn-lg fw-bold mb-3 w-25"
-                >
+                <button className="btn btn-outline-success btn-lg fw-bold mb-3 w-25">
                   Login
-                </button> <br />
-                {error && <p className="text-danger">{error}</p>}
-                <span className="fw-bold">Don't Have an Account? <Link className="text-decoration-none" to="/register/doctor">Register</Link></span>
+                </button>
               </form>
             </div>
           </div>

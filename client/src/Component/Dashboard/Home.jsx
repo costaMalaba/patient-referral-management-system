@@ -1,8 +1,19 @@
 import React from "react";
 import PieChart from "./Pichart";
 import LineChart from "./Linechart";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const Home = () => {
+  const handleHospital = async () => {
+    try {
+      const res = await axios.get("http://localhost:8800/hospital");
+      console.log(res);
+    } catch (error) {
+      toast.success("Error");
+    }
+  }
+
   return (
     <div className="p-5 bg-light">
       <div className="container-fluid">
@@ -10,7 +21,7 @@ const Home = () => {
           <div className="col-12 col-sm-6 colmd-4 col-lg-3">
             <div className="d-flex justify-content-around align-items-center p-3 bg-light rounded-3 border-secondary shadow-lg">
               <i className="bi bi-hospital fs-1 text-success"></i>
-              <div>
+              <div  className="btn" onClick={handleHospital}>
                 <p className="fs-1">
                   <strong>Hospital</strong>
                 </p>
