@@ -72,7 +72,7 @@ const Dashboard = () => {
                 </ul>
             </div>
         </div>
-        <div className="col p-0 m-0">
+        <div className="col p-0 m-0 dashboard_content">
             <div className="p-2 d-flex justify-content-center shadow text-white content">
               <h3 className="fw-bold text-primary mx-5 py-1">Patient Referral Management System</h3>
               <div className="dropdown ms-auto py-2">

@@ -122,7 +122,7 @@ const PatientRegister = () => {
           <div className="row g-5 mb-5">
             <div className="col-6">
               <label for="gender" className="form-label fw-bold">
-                Gender:
+                Sex:
               </label>
               <select
                 className="form-select text-center"
@@ -144,7 +144,7 @@ const PatientRegister = () => {
                 Phone Number:
               </label>
               <input
-                type="text"
+                type="number"
                 placeholder="eg. 075444.."
                 className="form-control text-center"
                 id="phone_no"

@@ -137,7 +137,7 @@ const CreateReferral = () => {
 
             <div className="col-2">
               <label for="gender" className="col-form-label fw-bold">
-                Gender:
+                Sex:
               </label>
             </div>
             <div className="col-2">
@@ -381,7 +381,7 @@ const CreateReferral = () => {
           
           <div className="text-center">
             <button className="btn btn-outline-success btn-lg fw-bold mt-4">
-              Register
+              Assign
             </button>
             <button
               className="btn btn-outline-secondary ms-5 btn-lg fw-bold mt-4"
