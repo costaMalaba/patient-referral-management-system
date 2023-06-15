@@ -58,6 +58,10 @@
   text-shadow: 0px 4px 50px rgba(94, 91, 255, 0.1);
 }
 
+.home-card:hover {
+  background-color: #0474ED;
+}
+
 .login {
   font-family: 'Inter';
   font-style: normal;

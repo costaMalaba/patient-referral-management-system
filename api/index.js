@@ -6,6 +6,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import doctor from "./routes/doctors.js"
 import patient from "./routes/patient.js"
+import schedule from "./routes/schedule.js";
 
 dotenv.config();
 const app = express();
@@ -21,18 +22,23 @@ app.use(cors({
 
 app.use("/login", logIn);
 
-app.use("/api/doctor", doctor);
-app.use("/api/doctor/", doctor);
-app.use("/api/doctor", doctor);
+// Doctors
+app.use("/get", doctor);
+app.use("/doctor", doctor);
 app.use("/editDoctor/", doctor);
 app.use("/delete/", doctor);
 
 app.use("/hospital", getAllHospital);
 
+// Patients
+app.use("/result", patient);
 app.use("/patient/add", patient);
-app.use("/get", patient);
+app.use("/patient", patient);
 app.use("/edit/", patient);
 app.use("/delete/", patient);
+
+// Schedules
+app.use("/schedule", schedule);
 
 const PORT = process.env.PORT || 5000
 

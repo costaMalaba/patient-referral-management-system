@@ -14,6 +14,12 @@ import EditDoctor from "./Component/DoctorPages/EditDoctor";
 import CreateReferral from "./Component/ReferralPages/CreateReferral";
 import Dashboard from "./Component/Dashboard/Dashboard";
 import Home from "./Component/Dashboard/Home";
+import Schedule from "./Component/PatientPages/Schedule";
+import RegisterHospital from "./Component/HospitalPages/RegisterHospital";
+import EditHospital from "./Component/HospitalPages/EditHospital";
+import HospitalDetails from "./Component/HospitalPages/HospitalDetails";
+import ScheduleDetails from "./Component/PatientPages/ScheduleDetails";
+import EditSchedule from "./Component/PatientPages/EditSchedule";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +43,18 @@ const router = createBrowserRouter([
         element: <PatientDetails />
       },
       {
+        path: "/dashboard/view/schedule",
+        element: <ScheduleDetails />
+      },
+      {
+        path: "/dashboard/schedule/edit/:id",
+        element: <EditSchedule />
+      },
+      {
+        path: "/dashboard/patient/schedule/:id",
+        element: <Schedule />
+      },
+      {
         path: "/dashboard/view/patient/add",
         element: <PatientRegister />
       },
@@ -53,6 +71,18 @@ const router = createBrowserRouter([
         element: <EditDoctor />,
       },
       {
+        path: "/dashboard/register/hospital",
+        element: <RegisterHospital />
+      },
+      {
+        path: "/dashboard/edit/hospital/:id",
+        element: <EditHospital />,
+      },
+      {
+        path: "/dashboard/view/hospital",
+        element: <HospitalDetails />,
+      },
+      {
         path: "/dashboard/create/referral",
         element: <CreateReferral />,
       }
@@ -64,7 +94,7 @@ const router = createBrowserRouter([
 const App = () => {
   return (
     <div>
-      <ToastContainer position="top-right" theme="dark" />
+      <ToastContainer position="top-right" theme="light" />
       <RouterProvider router={router} />
     </div>
   );

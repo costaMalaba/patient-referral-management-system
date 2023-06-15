@@ -2,12 +2,10 @@ import { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { v4 as uuid } from "uuid";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
-const Doctor_Register = () => {
+const RegisterHospital = () => {
   const [inputs, setInputs] = useState({
-    doctor_id: uuid(),
     first_name: "",
     middle_name: "",
     surname: "",
@@ -36,7 +34,7 @@ const Doctor_Register = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        'http://localhost:8800/doctor/register',
+        "http://localhost:8800/api/doctor/register/",
         inputs
       );
       if (res.data.Status === "Success") {
@@ -56,17 +54,17 @@ const Doctor_Register = () => {
 
   return (
     <div className="conatiner p-5 m-5">
-      <Link to="/dashboard/view" className="px-0">
+      <Link to="/dashboard/view/hospital" className="px-0">
         <button className="btn btn-sm btn-lg btn-primary">BACK</button>
       </Link>
       <div className="col-12">
         <form onSubmit={handleSubmit} className="form text-center">
-          <h1 className="login mb-3">Doctor Registration Form</h1>
+          <h1 className="login mb-3">Hospital Registration Form</h1>
           {error && toast.error(error)}
           <div className="row mb-5">
             <div className="col-6">
               <label for="first_name" className="form-label fw-bold">
-                First Name:
+                Name:
               </label>
               <input
                 type="text"
@@ -80,7 +78,7 @@ const Doctor_Register = () => {
 
             <div className="col-6">
               <label for="middle_name" className="form-label fw-bold">
-                Midlle Name:
+                Location:
               </label>
               <input
                 type="text"
@@ -95,57 +93,6 @@ const Doctor_Register = () => {
 
           <div className="row mb-5">
             <div className="col-6">
-              <label for="surname" className="form-label fw-bold">
-                Surname:
-              </label>
-              <input
-                type="text"
-                className="form-control text-center"
-                id="surname"
-                name="surname"
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="col-6">
-              <label for="age" className="form-label fw-bold">
-                Age:
-              </label>
-              <input
-                type="number"
-                min={18}
-                max={100}
-                className="form-control text-center"
-                name="age"
-                id="age"
-                onChange={handleChange}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="row mb-5">
-            <div className="col-6">
-              <label for="gender" className="form-label fw-bold">
-                Gender:
-              </label>
-              <select
-                className="form-select text-center"
-                id="gender"
-                name="gender"
-                onChange={handleChange}
-                required
-              >
-                <option selected defaultValue={"Uknown"} disabled>
-                  Select Here
-                </option>
-                <option value={"M"}>MALE</option>
-                <option value={"F"}>FEMALE</option>
-              </select>
-            </div>
-
-            <div className="col-6">
               <label for="phone_no" className="form-label fw-bold">
                 Phone Number:
               </label>
@@ -158,30 +105,6 @@ const Doctor_Register = () => {
                 onChange={handleChange}
                 required
               />
-            </div>
-          </div>
-
-          <div className="row mb-5">
-            <div className="col-6">
-              <label for="specialization" className="form-label fw-bold">
-                Specialization:
-              </label>
-              <select
-                className="form-select text-center"
-                id="specialization"
-                name="specialization"
-                onChange={handleChange}
-                required
-              >
-                <option selected defaultValue={"Uknown"} disabled>
-                  Select Here
-                </option>
-                <option value={"Cardiology"}>Cardiology</option>
-                <option value={"Dermatology"}>Dermatology</option>
-                <option value={"Endocrinology"}>Endocrinology</option>
-                <option value={"Gastroenterology"}>Gastroenterology</option>
-                <option value={"Neurology"}>Neurology</option>
-              </select>
             </div>
 
             <div className="col-6">
@@ -245,4 +168,4 @@ const Doctor_Register = () => {
   );
 };
 
-export default Doctor_Register;
+export default RegisterHospital;

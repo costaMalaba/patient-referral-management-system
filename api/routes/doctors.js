@@ -1,11 +1,13 @@
 import express from 'express';
-import { getDoctor, addDoctor, editDoctor, getSingleDoctor, deleteDoctor } from '../controller/doctors.js';
+import { getAllDoctor, getSearchedDoctors, addDoctor, editDoctor, getSingleDoctor, deleteDoctor, reportDoctors } from '../controller/doctors.js';
 
 const router = express.Router();
 
-router.get("/", getDoctor);
+router.get("/doctor", getAllDoctor);
+router.get("/search/", getSearchedDoctors);
 router.get("/:id", getSingleDoctor);
-router.post("/register", addDoctor);
+router.route("/report/data").get(reportDoctors);
+router.route("/register").post(addDoctor);
 router.put("/:id", editDoctor);
 router.delete("/doctor/:id", deleteDoctor);
 
