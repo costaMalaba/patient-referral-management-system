@@ -14,7 +14,6 @@ const PatientRegister = () => {
     phone_no: "",
     health_id: "",
     email: "",
-    status: "",
   });
 
   //const [error, setError] = useState(null);
@@ -144,8 +143,8 @@ const PatientRegister = () => {
                 Phone Number:
               </label>
               <input
-                type="number"
-                placeholder="eg. 075444.."
+                type="text"
+                placeholder="eg. +25575444.."
                 className="form-control text-center"
                 id="phone_no"
                 name="phone_no"
@@ -185,25 +184,7 @@ const PatientRegister = () => {
             </div>
           </div>
 
-          <div className="row g-5">
-            <div className="col-6">
-              <label for="status" className="form-label fw-bold">
-                Status:
-              </label>
-              <input
-                type="text"
-                className="form-control text-center"
-                id="status"
-                name="status"
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="col-6"></div>
-          </div>
-
-          <button className="btn btn-outline-success btn-lg fw-bold mt-4">
+          <button type="submit" className="btn btn-outline-success btn-lg fw-bold mt-4">
             Register
           </button>
 

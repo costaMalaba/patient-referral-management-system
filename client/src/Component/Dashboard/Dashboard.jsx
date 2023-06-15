@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import "../../App.css";
 import profile from "../../Component/Images/cym.jpeg";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -28,6 +29,18 @@ const Dashboard = () => {
                         <Link to="/dashboard/home" className="nav-link align-middle px-0 text-white">
                             <i className="fs-4 bi-house"></i> <span className="ms-1 d-none d-sm-inline">Home</span>
                         </Link>
+                    </li>
+                    <li>
+                        <Link to="#submenu3" data-bs-toggle="collapse" className="nav-link px-0 align-middle text-white">
+                            <i className="fs-4 bi-hospital"></i> <span className="ms-1 d-none d-sm-inline">Hospital</span></Link>
+                        <ul className="collapse nav flex-column ms-1" id="submenu3" data-bs-parent="#menu">
+                            <li className="w-100">
+                                <Link to="/dashboard/view/hospital" className="nav-link px-0"> <span className="d-none d-sm-inline">View Hospital</span></Link>
+                            </li>
+                            <li>
+                                <Link to="/dashboard/register/hospital" className="nav-link px-0"> <span className="d-none d-sm-inline">Add Hospital</span></Link>
+                            </li>
+                        </ul>
                     </li>
                     <li>
                         <Link to="#submenu2" data-bs-toggle="collapse" className="nav-link px-0 align-middle text-white">
@@ -66,6 +79,15 @@ const Dashboard = () => {
                         </ul>
                     </li>
                     <li>
+                        <Link to="#submenu4" data-bs-toggle="collapse" className="nav-link px-0 align-middle text-white">
+                            <i className="fs-4 bi-file-medical"></i> <span className="ms-1 d-none d-sm-inline">Schedule</span></Link>
+                        <ul className="collapse nav flex-column ms-1" id="submenu4" data-bs-parent="#menu">
+                            <li className="w-100">
+                                <Link to="/dashboard/view/schedule" className="nav-link px-0"> <span className="d-none d-sm-inline">View Schedules</span></Link>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
                         <Link to="#" className="nav-link px-0 align-middle text-white">
                             <i className="fs-4 bi bi-file-medical-fill"></i> <span className="ms-1 d-none d-sm-inline">Medical History</span> </Link>
                     </li>
@@ -81,8 +103,7 @@ const Dashboard = () => {
                         <span className="d-none d-sm-inline mx-1">Profile</span>
                     </Link>
                     <ul className="dropdown-menu dropdown-menu-dark text-small shadow">
-                        <li><Link className="dropdown-item" to="#">Settings</Link></li>
-                        <li><Link className="dropdown-item" to="#">Profile</Link></li>
+                        <li><Link className="dropdown-item" to="#">Your Profile</Link></li>
                         <li>
                             <hr className="dropdown-divider" />
                         </li>

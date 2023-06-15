@@ -29,7 +29,7 @@ const EditDoctor = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8800/api/doctor/` + id)
+      .get(`http://localhost:8800/doctor/` + id)
       .then((res) => {
         setData({
           ...data,

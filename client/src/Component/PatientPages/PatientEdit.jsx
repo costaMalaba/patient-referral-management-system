@@ -28,7 +28,7 @@ const EditPatient = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8800/get/patient/` + id)
+      .get(`http://localhost:8800/result/patient/` + id)
       .then((res) => {
         setData({
           ...data,
@@ -65,7 +65,7 @@ const EditPatient = () => {
 
   return (
     <div className="conatiner p-5 m-5">
-      <Link to="/dashboard/view" className="px-0">
+      <Link to="/dashboard/view/patient" className="px-0">
         <button className="btn btn-sm btn-lg btn-primary">BACK</button>
       </Link>
       <div className="col-12">

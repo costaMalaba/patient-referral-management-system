@@ -1,13 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { v4 as uuid } from "uuid";
-import "bootstrap-icons/font/bootstrap-icons.css";
 
-const Doctor_Register = () => {
-  const [inputs, setInputs] = useState({
-    doctor_id: uuid(),
+const EditHospital = () => {
+  const [data, setData] = useState({
     first_name: "",
     middle_name: "",
     surname: "",
@@ -23,36 +20,50 @@ const Doctor_Register = () => {
   const [error, setError] = useState(null);
 
   const handleChange = (e) => {
-    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const handlePrint = () => {
-    window.print();
+    setData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const navigate = useNavigate();
 
+  const { id } = useParams();
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8800/doctor/` + id)
+      .then((res) => {
+        setData({
+          ...data,
+          first_name: res.data.Result[0].first_name,
+          middle_name: res.data.Result[0].middle_name,
+          surname: res.data.Result[0].surname,
+          specialization: res.data.Result[0].specialization,
+          age: res.data.Result[0].age,
+          gender: res.data.Result[0].gender,
+          phone_no: res.data.Result[0].phone_no,
+          username: res.data.Result[0].username,
+          password: res.data.Result[0].password,
+          email: res.data.Result[0].email,
+        });
+      })
+      .catch((err) => console.log(err));
+  },[]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        'http://localhost:8800/doctor/register',
-        inputs
+      const res = await axios.put(
+        `http://localhost:8800/editDoctor/` + id,
+        data
       );
-      if (res.data.Status === "Success") {
-        navigate("/dashboard/view");
-        toast.success(res.data.Message);
-      } else {
-        navigate("/dashboard/doctor");
-        toast.warning(res.data.Message);
-      }
+      navigate("/dashboard/view");
+      console.log(res);
+      toast.success("Doctor Updated Successfully!!");
     } catch (error) {
-      //console.log(error);
-      setError(error.response.data);
+      console.log(error);
     }
   };
 
-  console.log(inputs);
+  console.log(data);
 
   return (
     <div className="conatiner p-5 m-5">
@@ -61,7 +72,7 @@ const Doctor_Register = () => {
       </Link>
       <div className="col-12">
         <form onSubmit={handleSubmit} className="form text-center">
-          <h1 className="login mb-3">Doctor Registration Form</h1>
+          <h1 className="login mb-3">Update Doctor Here</h1>
           {error && toast.error(error)}
           <div className="row mb-5">
             <div className="col-6">
@@ -73,6 +84,7 @@ const Doctor_Register = () => {
                 className="form-control text-center"
                 id="first_name"
                 name="first_name"
+                value={data.first_name}
                 onChange={handleChange}
                 required
               />
@@ -87,6 +99,7 @@ const Doctor_Register = () => {
                 className="form-control text-center"
                 id="middle_name"
                 name="middle_name"
+                value={data.middle_name}
                 onChange={handleChange}
                 required
               />
@@ -103,6 +116,7 @@ const Doctor_Register = () => {
                 className="form-control text-center"
                 id="surname"
                 name="surname"
+                value={data.surname}
                 onChange={handleChange}
                 required
               />
@@ -114,11 +128,11 @@ const Doctor_Register = () => {
               </label>
               <input
                 type="number"
-                min={18}
-                max={100}
+                min={0}
                 className="form-control text-center"
                 name="age"
                 id="age"
+                value={data.age}
                 onChange={handleChange}
                 required
               />
@@ -130,14 +144,8 @@ const Doctor_Register = () => {
               <label for="gender" className="form-label fw-bold">
                 Gender:
               </label>
-              <select
-                className="form-select text-center"
-                id="gender"
-                name="gender"
-                onChange={handleChange}
-                required
-              >
-                <option selected defaultValue={"Uknown"} disabled>
+              <select className="form-select text-center" id="gender" name="gender" value={data.gender} onChange={handleChange} required>
+                <option defaultValue={"Uknown"} disabled>
                   Select Here
                 </option>
                 <option value={"M"}>MALE</option>
@@ -156,13 +164,14 @@ const Doctor_Register = () => {
                 id="phone_no"
                 name="phone_no"
                 onChange={handleChange}
+                value={data.phone_no}
                 required
               />
             </div>
           </div>
 
           <div className="row mb-5">
-            <div className="col-6">
+          <div className="col-6">
               <label for="specialization" className="form-label fw-bold">
                 Specialization:
               </label>
@@ -170,6 +179,7 @@ const Doctor_Register = () => {
                 className="form-select text-center"
                 id="specialization"
                 name="specialization"
+                value={data.specialization}
                 onChange={handleChange}
                 required
               >
@@ -193,6 +203,7 @@ const Doctor_Register = () => {
                 className="form-control text-center"
                 id="email"
                 name="email"
+                value={data.email}
                 onChange={handleChange}
                 required
               />
@@ -209,6 +220,7 @@ const Doctor_Register = () => {
                 className="form-control text-center"
                 id="username"
                 name="username"
+                value={data.username}
                 onChange={handleChange}
                 required
               />
@@ -223,21 +235,15 @@ const Doctor_Register = () => {
                 className="form-control text-center"
                 id="password"
                 name="password"
+                value={data.password}
                 onChange={handleChange}
                 required
               />
             </div>
           </div>
 
-          <button className="btn btn-outline-success btn-lg fw-bold mt-4">
-            Register
-          </button>
-
-          <button
-            className="btn btn-outline-secondary ms-5 btn-lg fw-bold mt-4"
-            onClick={handlePrint}
-          >
-            <i className="bi bi-printer-fill"></i>
+          <button className="btn btn-outline-warning btn-lg fw-bold mt-4">
+            Update
           </button>
         </form>
       </div>
@@ -245,4 +251,4 @@ const Doctor_Register = () => {
   );
 };
 
-export default Doctor_Register;
+export default EditHospital;

@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import Write from "../ReferralPages/Write";
+import referral from "../PatientPages/referral.pdf";
 
 const CreateReferral = () => {
   const [inputs, setInputs] = useState({

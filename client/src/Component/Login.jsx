@@ -54,10 +54,12 @@ const Login = () => {
         <div className="col-3"></div>
 
         <div className="col-6">
-          <div className="card border-0 py-5 shadow-lg">
-            <div className="card-body">
+          <div className="card border-0 shadow-lg">
+            <div className="card-header p-0 m-0">
+              <h1 className="login">Login Here</h1>
+            </div>
+            <div className="card-body py-5">
               <form onSubmit={handleSubmit} className="text-center">
-                <h1 className="login">Login Here</h1>
                 <div className="mb-5 mt-5">
                   <input
                     type="text"
