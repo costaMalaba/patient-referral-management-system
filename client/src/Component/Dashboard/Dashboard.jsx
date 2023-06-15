@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import "../../App.css";
 import profile from "../../Component/Images/cym.jpeg";
 import { toast } from "react-toastify";
-import axios from "axios";
 
 const Dashboard = () => {
     const navigate = useNavigate();

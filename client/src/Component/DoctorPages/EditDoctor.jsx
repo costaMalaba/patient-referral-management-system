@@ -17,8 +17,6 @@ const EditDoctor = () => {
     email: "",
   });
 
-  const [error, setError] = useState(null);
-
   const handleChange = (e) => {
     setData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -29,7 +27,7 @@ const EditDoctor = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8800/doctor/` + id)
+      .get(`http://localhost:8800/doctor/${id}`)
       .then((res) => {
         setData({
           ...data,
@@ -73,7 +71,6 @@ const EditDoctor = () => {
       <div className="col-12">
         <form onSubmit={handleSubmit} className="form text-center">
           <h1 className="login mb-3">Update Doctor Here</h1>
-          {error && toast.error(error)}
           <div className="row mb-5">
             <div className="col-6">
               <label for="first_name" className="form-label fw-bold">
