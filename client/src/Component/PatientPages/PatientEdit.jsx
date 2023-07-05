@@ -2,19 +2,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import moment from "moment";
 
 const EditPatient = () => {
-  const [data, setData] = useState({
-    first_name: "",
-    middle_name: "",
-    surname: "",
-    age: "",
-    gender: "",
-    phone_no: "",
-    health_id: "",
-    email: "",
-    status: "",
-  });
+  const [data, setData] = useState([]);
 
   // const [error, setError] = useState(null);
 
@@ -30,18 +21,7 @@ const EditPatient = () => {
     axios
       .get(`http://localhost:8800/result/patient/` + id)
       .then((res) => {
-        setData({
-          ...data,
-          first_name: res.data.Result[0].first_name,
-          middle_name: res.data.Result[0].middle_name,
-          surname: res.data.Result[0].surname,
-          age: res.data.Result[0].age,
-          gender: res.data.Result[0].gender,
-          phone_no: res.data.Result[0].phone_no,
-          health_id: res.data.Result[0].health_id,
-          email: res.data.Result[0].email,
-          status: res.data.Result[0].status,
-        });
+        setData(res.data.Result[0]);
       })
       .catch((err) => console.log(err));
   },[]);
@@ -49,15 +29,20 @@ const EditPatient = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.put(
-        `http://localhost:8800/edit/patient/` + id,
+      await axios.put(
+        `http://localhost:8800/edit/patient/${id}`,
         data
-      );
-      navigate("/dashboard/view/patient");
-      console.log(res);
-      toast.success("Patient Updated Successfully!!");
+      ).then(res => {
+        if (res.data.Status === "Success") {
+          navigate("/dashboard/view/patient");
+        toast.success(res.data.Message);
+        } else {
+          navigate(`/dashboard/view/patient/edit/${id}`);
+          toast.warning(res.data.Message);
+        }
+      })
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -69,11 +54,11 @@ const EditPatient = () => {
         <button className="btn btn-sm btn-lg btn-primary">BACK</button>
       </Link>
       <div className="col-12">
-        <form onSubmit={handleSubmit} className="form text-center">
+      <form onSubmit={handleSubmit} className="form text-center">
           <h1 className="login mb-3">Update Patient Here</h1>
           <div className="row g-5 mb-5">
             <div className="col-6">
-              <label for="first_name" className="form-label fw-bold">
+              <label htmlFor="first_name" className="form-label fw-bold">
                 First Name:
               </label>
               <input
@@ -88,8 +73,8 @@ const EditPatient = () => {
             </div>
 
             <div className="col-6">
-              <label for="middle_name" className="form-label fw-bold">
-                Midlle Name:
+              <label htmlFor="middle_name" className="form-label fw-bold">
+                Middle Name:
               </label>
               <input
                 type="text"
@@ -105,7 +90,7 @@ const EditPatient = () => {
 
           <div className="row g-5 mb-5">
             <div className="col-6">
-              <label for="surname" className="form-label fw-bold">
+              <label htmlFor="surname" className="form-label fw-bold">
                 Surname:
               </label>
               <input
@@ -120,47 +105,15 @@ const EditPatient = () => {
             </div>
 
             <div className="col-6">
-              <label for="age" className="form-label fw-bold">
-                Age:
-              </label>
-              <input
-                type="number"
-                min={0}
-                className="form-control text-center"
-                name="age"
-                id="age"
-                value={data.age}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="row g-5 mb-5">
-            <div className="col-6">
-              <label for="gender" className="form-label fw-bold">
-                Gender:
-              </label>
-              <select className="form-select text-center" id="gender" name="gender" onChange={handleChange} value={data.gender} required>
-                <option defaultValue={"Uknown"} disabled>
-                  Select Here
-                </option>
-                <option value={"M"}>MALE</option>
-                <option value={"F"}>FEMALE</option>
-              </select>
-            </div>
-
-            <div className="col-6">
-              <label for="phone_no" className="form-label fw-bold">
-                Phone Number:
+              <label htmlFor="parent" className="form-label fw-bold">
+                Patient/Gurdian:
               </label>
               <input
                 type="text"
-                placeholder="eg. 075444.."
                 className="form-control text-center"
-                id="phone_no"
-                name="phone_no"
-                value={data.phone_no}
+                name="parent"
+                id="parent"
+                value={data.parent}
                 onChange={handleChange}
                 required
               />
@@ -169,22 +122,58 @@ const EditPatient = () => {
 
           <div className="row g-5 mb-5">
           <div className="col-6">
-              <label for="health_id" className="form-label fw-bold">
-                Health Insuarance ID:
+              <label htmlFor="dob" className="form-label fw-bold">
+                Date of Birth:
               </label>
               <input
-                type="text"
+                type="date"
                 className="form-control text-center"
-                id="health_id"
-                name="health_id"
-                value={data.health_id}
+                name="dob"
+                id="dob"
+                value={moment(data.dob).format('YYYY-MM-DD')}
                 onChange={handleChange}
                 required
               />
             </div>
 
             <div className="col-6">
-              <label for="email" className="form-label fw-bold">
+              <label htmlFor="sex" className="form-label fw-bold">
+                Sex:
+              </label>
+              <select
+                className="form-select text-center"
+                id="sex"
+                name="sex"
+                value={data.sex}
+                onChange={handleChange}
+                required
+              >
+                <option className="text-muted" defaultValue={"Uknown"}>
+                  Select Here
+                </option>
+                <option value={"M"}>MALE</option>
+                <option value={"F"}>FEMALE</option>
+              </select>
+            </div>
+
+            <div className="col-6">
+              <label htmlFor="phone_no" className="form-label fw-bold">
+                Phone Number:
+              </label>
+              <input
+                type="text"
+                placeholder="start with: 255"
+                className="form-control text-center"
+                id="phone_no"
+                name="phone_no"
+                value={data.phone_no}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="col-6">
+              <label htmlFor="email" className="form-label fw-bold">
                 Email:
               </label>
               <input
@@ -199,25 +188,8 @@ const EditPatient = () => {
             </div>
           </div>
 
-          <div className="row g-5">
-          <div className="col-6">
-              <label for="status" className="form-label fw-bold">
-                Status:
-              </label>
-              <input
-                type="text"
-                className="form-control text-center"
-                id="status"
-                name="status"
-                value={data.status}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          </div>
-
-          <button className="btn btn-outline-warning btn-lg fw-bold mt-4">
-            Update
+          <button type="submit" className="btn btn-warning btn-lg fw-bold mt-4">
+            EDIT
           </button>
         </form>
       </div>

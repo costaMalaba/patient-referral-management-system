@@ -1,15 +1,27 @@
 import con from "../db/database.js";
 import dotenv from "dotenv";
-import sendMail from "../services/sendEmail.js";
+import moment from "moment";
 
 dotenv.config();
 
 export const getAllPatient = (req, res) => {
-  const q = "SELECT p.*, s.status AS status FROM patient p LEFT JOIN schedule s ON p.id = s.patient_id";
-  con.query(q, (err, data) => {
+  const q =
+    "SELECT p.*, s.status AS status, FLOOR(DATEDIFF(CURDATE(), dob)/365) AS age FROM patient AS p LEFT JOIN schedule AS s ON p.pat_id=s.patient_id LEFT JOIN hospital AS h ON h.username=p.hospUsername WHERE p.hospUsername=?";
+    const q1 =
+    "SELECT p.*, s.status AS status, FLOOR(DATEDIFF(CURDATE(), dob)/365) AS age, h.name AS name FROM patient AS p LEFT JOIN schedule AS s ON p.pat_id=s.patient_id LEFT JOIN hospital AS h ON h.username=p.hospUsername";
+    const username = req.query.term;
+  con.query(q, [username], (err, data) => {
     if (err) {
       return res.json({ Error: err });
-    } else {
+    } else if (username === "Admin") {
+      con.query(q1, (err, data) => {
+        if(err) {
+          return res.json({ Error: err });
+        } else {
+          return res.status(200).json({ Status: "Success", Result: data });
+        }
+      })
+    }else {
       return res.status(200).json({ Status: "Success", Result: data });
     }
   });
@@ -28,9 +40,9 @@ export const getSearchedPatients = (req, res) => {
 };
 
 export const getSinglePatient = (req, res) => {
-  const id = req.params.id;
-  const q = `SELECT * FROM patient WHERE id = ${id} LIMIT 1`;
-  con.query(q, (err, data) => {
+  const q = `SELECT * FROM patient WHERE pat_id = ? LIMIT 1`;
+  const { id } = req.params;
+  con.query(q, [id], (err, data) => {
     if (err) {
       return res.json({ Error: err });
     } else {
@@ -40,57 +52,67 @@ export const getSinglePatient = (req, res) => {
 };
 
 export const reportPatients = (req, res) => {
-  const q = `SELECT MONTHNAME(updated_at) AS month, COUNT(*) AS patients FROM patient GROUP BY month`;
-  con.query(q, (err, result) => {
+  const q = `SELECT COUNT(s.status) AS patients, s.status AS status FROM patient p LEFT JOIN schedule s ON p.pat_id = s.patient_id WHERE p.hospUsername = ? GROUP BY status`;
+  const q1 = `SELECT COUNT(s.status) AS patients, s.status AS status FROM patient p LEFT JOIN schedule s ON p.pat_id = s.patient_id GROUP BY status`;
+  const username= req.query.term;
+  con.query(q, [username], (err, result) => {
     if (err) {
       return res.json({ Error: err });
-    } else {
+    } else if (username === "Admin") {
+      con.query(q1, (err, result) => {
+        if (err) {
+          return res.json({ Error: err });
+        } else {
+          return res.status(200).json({ Status: "Success", Result: result });
+        }
+      })
+    }else {
       return res.status(200).json({ Status: "Success", Result: result });
     }
   });
 };
 
 export const countPatients = (req, res) => {
-  const q = `SELECT COUNT(*) AS patients FROM patient`;
-  con.query(q, (err, data) => {
+  const q = 'SELECT COUNT(*) AS patients FROM patient WHERE hospUsername= ?';
+  const q1 = 'SELECT COUNT(*) AS patients FROM patient';
+  const username = req.query.term;
+  con.query(q, [username], (err, data) => {
     if (err) {
       return res.json({ Error: err });
-    } else {
+    } else if (username === "Admin") {
+      con.query(q1, (err, data) => {
+        if (err) {
+          return res.json({ Error: err });
+        } else {
+          return res.status(200).json({ Status: "Success", Result: data });
+        }
+      })
+    }else {
       return res.status(200).json({ Status: "Success", Result: data });
     }
   });
 };
 
 export const addPatient = (req, res) => {
-  // CHECKING EXISTING PATIEBT
-  const q1 = "SELECT * FROM patient WHERE email = ? OR health_id = ?";
-  con.query(q1, [req.body.email, req.body.health_id], (error, data) => {
-    if (error) return res.json({ Error: "Error in Querying" });
-    if (data.length > 0)
+  // CHECKING EXISTING PATIENT
+  const q1 = "SELECT * FROM patient WHERE email = ? OR phone_no = ?";
+  const { pat_id, hospUsername, first_name, middle_name, surname, parent, dob, sex, phone_no, email } = req.body;
+  con.query(q1, [email, phone_no], (err, result) => {
+    if (err) return res.json({ Status: "Error", Message: "Error in Querying", Result: result });
+    if (result.length > 0)
       return res.json({
         Status: "Error",
-        Message: "Email or Health ID Already Used!!",
+        Message: "Email or Phone No Already Used!!",
       });
     else {
-      const q = 'INSERT INTO patient(`first_name`, `middle_name`, `surname`, `age`, `gender`, `phone_no`, `health_id`, `email`) VALUES (?)';
-      const values = [
-        req.body.first_name,
-        req.body.middle_name,
-        req.body.surname,
-        req.body.age,
-        req.body.gender,
-        req.body.phone_no,
-        req.body.health_id,
-        req.body.email,
-      ];
-      const text = `Ndugu ${req.body.first_name}, Umesajiliwa Kikamilifu katika mfumo wa rufaa`;
-      const subject = "PRMS - PATIENT REGISTRATION";
+      const q =
+        "INSERT INTO patient(`pat_id`, `hospUsername`, `first_name`, `middle_name`, `surname`, `parent`, `dob`, `sex`, `phone_no`, `email`) VALUES (?)";
+      const values = [ pat_id, hospUsername, first_name, middle_name, surname, parent, dob, sex, phone_no, email ];
 
       con.query(q, [values], (err, result) => {
         if (err) {
           return res.json({ Error: err });
         } else {
-          sendMail(req.body.email, text, subject);
           return res.status(200).json({
             Status: "Success",
             Message: "Patient Has Been Added",
@@ -103,34 +125,49 @@ export const addPatient = (req, res) => {
 };
 
 export const editPatient = (req, res) => {
-  const id = req.params.id;
   const q =
-    "UPDATE patient SET first_name = ?, middle_name = ?, surname = ?, age = ?, gender = ?, phone_no = ?, health_id = ?, email = ?, status = ? WHERE id = ?";
+    "UPDATE patient SET first_name = ?, middle_name = ?, surname = ?, parent = ?, dob = ?, sex = ?, phone_no = ?, email = ? WHERE pat_id = ?";
+    const { first_name, middle_name, surname, parent, dob, sex, phone_no, email } = req.body;
+    const formattedDob = moment(dob).format('YYYY-MM-DD');
+    const { id } = req.params;
 
   con.query(
     q,
     [
-      req.body.first_name,
-      req.body.middle_name,
-      req.body.surname,
-      req.body.age,
-      req.body.gender,
-      req.body.phone_no,
-      req.body.health_id,
-      req.body.email,
-      req.body.status,
+      first_name,
+      middle_name,
+      surname,
+      parent,
+      formattedDob,
+      sex,
+      phone_no,
+      email,
       id,
     ],
     (err, data) => {
-      if (err) return res.json({ Error: "Error in Querying" });
-      return res.json({ Status: "Success", Result: data });
+      if (err) return res.json({ Status: "Error", Message: "Error in Querying", Result: err });
+      return res.json({ Status: "Success", Message: "Patient Updated Successfully!!", Result: data });
     }
   );
 };
 
+export const editPatientHealthStatus = (req, res) => {
+  const q = 'UPDATE patient SET healthStatus = ? WHERE pat_id = ?'
+  const { healthStatus  } = req.body;
+  const { id } = req.params;
+
+  con.query(q, [healthStatus, id], (err, result) => {
+    if (err) {
+      return res.json({ Status: "Error", Message: "Error in Querying", Result: err });
+    } else {
+      return res.json({ Status: "Success", Message: "Health status Changed", Result: result });
+    }
+  })
+}
+
 export const deletePatient = (req, res) => {
   const id = req.params.id;
-  const q = "DELETE FROM patient WHERE id = ?";
+  const q = "DELETE FROM patient WHERE pat_id = ?";
 
   con.query(q, [id], (err, data) => {
     if (err) return res.json({ Error: "Error in Querying" });

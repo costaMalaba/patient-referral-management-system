@@ -7,21 +7,14 @@ import { toast } from "react-toastify";
 const EditSchedule = () => {
   const [data, setData] = useState([]);
 
-  // const [error, setError] = useState(null);
-
   const handleChange = (e) => {
     setData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const navigate = useNavigate();
-
   const { id } = useParams();
 
   useEffect(() => {
-    getSchedule();
-  }, []);
-
-  const getSchedule = () => {
     try {
       axios.get(`http://localhost:8800/schedule/view/${id}`).then(res => {
         setData(res.data.Result[0]);
@@ -29,13 +22,13 @@ const EditSchedule = () => {
     } catch (error) {
       console.error(error);
     }
-  }
+  }, [id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await axios.put(
-        `http://localhost:8800/schedule/edit/` + id,
+        `http://localhost:8800/schedule/edit/${id}`,
         data
       );
       if (res.data.Status === "Success") {
@@ -43,7 +36,7 @@ const EditSchedule = () => {
         console.log(res);
         toast.success(res.data.Message);
       } else {
-        navigate(`/dashboard/schedule/edit/` + id);
+        navigate(`/dashboard/schedule/edit/${id}`);
         console.log(res);
         toast.warning(res.data.Message);
       }
@@ -51,6 +44,8 @@ const EditSchedule = () => {
       console.log(error);
     }
   };
+
+  console.log(data);
 
   const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
 
@@ -78,7 +73,7 @@ const EditSchedule = () => {
                   min={today}
                   id="date"
                   name="date"
-                  value={moment(data.date).format("YYY-MM-DD")}
+                  value={moment(data.date).format('YYYY-MM-DD')}
                   onChange={handleChange}
                   required
                 />

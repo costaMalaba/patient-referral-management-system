@@ -1,29 +1,27 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { v4 as uuid } from "uuid";
 import { toast } from "react-toastify";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
 const PatientRegister = () => {
   const [inputs, setInputs] = useState({
+    pat_id: uuid(),
     first_name: "",
     middle_name: "",
     surname: "",
-    age: "",
-    gender: "",
+    hospUsername: sessionStorage.getItem('username'),
+    parent: "",
+    dob: "",
+    sex: "",
     phone_no: "",
-    health_id: "",
     email: "",
   });
-
-  //const [error, setError] = useState(null);
+  console.log(inputs)
 
   const handleChange = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const handlePrint = () => {
-    window.print();
   };
 
   const navigate = useNavigate();
@@ -47,8 +45,6 @@ const PatientRegister = () => {
     }
   };
 
-  console.log(inputs);
-
   return (
     <div className="conatiner p-5 m-5">
       <Link to="/dashboard/view/patient" className="px-0">
@@ -59,7 +55,7 @@ const PatientRegister = () => {
           <h1 className="login mb-3">Patient Registration Form</h1>
           <div className="row g-5 mb-5">
             <div className="col-6">
-              <label for="first_name" className="form-label fw-bold">
+              <label htmlFor="first_name" className="form-label fw-bold">
                 First Name:
               </label>
               <input
@@ -73,7 +69,7 @@ const PatientRegister = () => {
             </div>
 
             <div className="col-6">
-              <label for="middle_name" className="form-label fw-bold">
+              <label htmlFor="middle_name" className="form-label fw-bold">
                 Middle Name:
               </label>
               <input
@@ -89,7 +85,7 @@ const PatientRegister = () => {
 
           <div className="row g-5 mb-5">
             <div className="col-6">
-              <label for="surname" className="form-label fw-bold">
+              <label htmlFor="surname" className="form-label fw-bold">
                 Surname:
               </label>
               <input
@@ -103,15 +99,14 @@ const PatientRegister = () => {
             </div>
 
             <div className="col-6">
-              <label for="age" className="form-label fw-bold">
-                Age:
+              <label htmlFor="parent" className="form-label fw-bold">
+                Patient/Gurdian:
               </label>
               <input
-                type="number"
-                min={0}
+                type="text"
                 className="form-control text-center"
-                name="age"
-                id="age"
+                name="parent"
+                id="parent"
                 onChange={handleChange}
                 required
               />
@@ -119,18 +114,32 @@ const PatientRegister = () => {
           </div>
 
           <div className="row g-5 mb-5">
+          <div className="col-6">
+              <label htmlFor="dob" className="form-label fw-bold">
+                Date of Birth:
+              </label>
+              <input
+                type="date"
+                className="form-control text-center"
+                name="dob"
+                id="dob"
+                onChange={handleChange}
+                required
+              />
+            </div>
+
             <div className="col-6">
-              <label for="gender" className="form-label fw-bold">
+              <label htmlFor="sex" className="form-label fw-bold">
                 Sex:
               </label>
               <select
                 className="form-select text-center"
-                id="gender"
-                name="gender"
+                id="sex"
+                name="sex"
                 onChange={handleChange}
                 required
               >
-                <option selected defaultValue={"Uknown"} disabled>
+                <option className="text-muted" defaultValue={"Uknown"}>
                   Select Here
                 </option>
                 <option value={"M"}>MALE</option>
@@ -139,12 +148,12 @@ const PatientRegister = () => {
             </div>
 
             <div className="col-6">
-              <label for="phone_no" className="form-label fw-bold">
+              <label htmlFor="phone_no" className="form-label fw-bold">
                 Phone Number:
               </label>
               <input
                 type="text"
-                placeholder="eg. +25575444.."
+                placeholder="start with: 255"
                 className="form-control text-center"
                 id="phone_no"
                 name="phone_no"
@@ -152,25 +161,9 @@ const PatientRegister = () => {
                 required
               />
             </div>
-          </div>
-
-          <div className="row g-5 mb-5">
-            <div className="col-6">
-              <label for="health_id" className="form-label fw-bold">
-                Health Insuarance ID:
-              </label>
-              <input
-                type="text"
-                className="form-control text-center"
-                id="health_id"
-                name="health_id"
-                onChange={handleChange}
-                required
-              />
-            </div>
 
             <div className="col-6">
-              <label for="email" className="form-label fw-bold">
+              <label htmlFor="email" className="form-label fw-bold">
                 Email:
               </label>
               <input
@@ -186,13 +179,6 @@ const PatientRegister = () => {
 
           <button type="submit" className="btn btn-outline-success btn-lg fw-bold mt-4">
             Register
-          </button>
-
-          <button
-            className="btn btn-outline-secondary ms-5 btn-lg fw-bold mt-4"
-            onClick={handlePrint}
-          >
-            <i className="bi bi-printer-fill"></i>
           </button>
         </form>
       </div>

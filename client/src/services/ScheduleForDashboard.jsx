@@ -3,6 +3,7 @@ import axios from "axios";
 import moment from "moment";
 
 const ScheduleForDashboard = () => {
+  const to = sessionStorage.getItem('to');
     const [schedules, setSchedules] = useState([]);
     useEffect(() => {
         getSchedules();
@@ -10,7 +11,7 @@ const ScheduleForDashboard = () => {
     
       const getSchedules = async () => {
         await axios
-          .get("http://localhost:8800/schedule/view")
+          .get(`http://localhost:8800/schedule/view?term=${to}`)
           .then((res) => {
             if (res.data.Status === "Success") {
               setSchedules(res.data.Result);
@@ -55,7 +56,7 @@ const ScheduleForDashboard = () => {
                     </td>
                     <td className="p-3">{schedule.time}</td>
                     <td className="p-3 text-center">{moment(schedule.updated_at).format("DD-MM-YYYY")}</td>
-                    {schedule.status === "Approved" && <td className="p-3 text-success fw-bold">{schedule.status}</td>}
+                    {schedule.status === "Approved & Assigned" && <td className="p-3 text-success fw-bold">{schedule.status}</td>}
                     {schedule.status === "Rejected" && <td className="p-3 text-danger fw-bold">{schedule.status}</td>}
                     {schedule.status === "Pending" && <td className="p-3 text-warning fw-bold">{schedule.status}</td>}
                   </tr>

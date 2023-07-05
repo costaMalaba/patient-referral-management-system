@@ -1,12 +1,14 @@
 import express from "express";
 import dotenv from "dotenv";
 import logIn from "./routes/auth.js"
-import getAllHospital from "./routes/hospital.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import hospital from "./routes/hospital.js";
 import doctor from "./routes/doctors.js"
 import patient from "./routes/patient.js"
 import schedule from "./routes/schedule.js";
+import md_history from "./routes/md_history.js";
+import referral from "./routes/referral.js";
 
 dotenv.config();
 const app = express();
@@ -22,13 +24,14 @@ app.use(cors({
 
 app.use("/login", logIn);
 
+// Hospitals
+app.use("/hospital", hospital);
+
 // Doctors
 app.use("/get", doctor);
 app.use("/doctor", doctor);
 app.use("/editDoctor/", doctor);
 app.use("/delete/", doctor);
-
-app.use("/hospital", getAllHospital);
 
 // Patients
 app.use("/result", patient);
@@ -39,6 +42,12 @@ app.use("/delete/", patient);
 
 // Schedules
 app.use("/schedule", schedule);
+
+// Medical Histories
+app.use("/md_history", md_history);
+
+// Referral
+app.use("/referral", referral);
 
 const PORT = process.env.PORT || 5000
 
