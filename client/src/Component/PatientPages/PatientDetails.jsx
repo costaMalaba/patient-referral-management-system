@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const PatientDetails = () => {
+  const username = sessionStorage.getItem('username');
   const [patients, setPatients] = useState([]);
 
   const handleDelete = async (id) => {
@@ -13,10 +14,10 @@ const PatientDetails = () => {
           .delete(`http://localhost:8800/delete/patient/${id}`)
           .then((res) => {
             if (res.data.Status === "Success") {
-              toast.success(res.data.Message);  
+              toast.success(res.data.Message);
               setTimeout(() => {
                 window.location.reload(true);
-              },5000)
+              }, 5000);
             } else {
               alert("Error");
             }
@@ -33,14 +34,14 @@ const PatientDetails = () => {
 
   const getPatients = async () => {
     await axios
-      .get("http://localhost:8800/result/patient")
+      .get(`http://localhost:8800/result/patients?term=${username}`)
       .then((res) => {
         if (res.data.Status === "Success") {
           setPatients(res.data.Result);
         }
       })
       .catch((err) => console.log(err));
-  }
+  };
 
   const handleSearch = async (e) => {
     let searchTerm = e.target.value;
@@ -52,26 +53,49 @@ const PatientDetails = () => {
         }
       })
       .catch((err) => console.log(err));
+  };
+
+  const handleMdHistory = async (patientId) => {
+    try {
+      await axios.get(`http://localhost:8800/md_history/get/single/${patientId}`).then(res => {
+        if(res.data.Status === "Success") {
+          window.location.href = `/dashboard/add/history/profile/${patientId}`
+        } else {
+          console.log(res.data.Status);
+          window.location.href = `/dashboard/add/history/${patientId}`
+          
+        }
+      })
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
     <div className="container-fluid p-3">
-        <input type="" onChange={handleSearch} placeholder="Search Patient" className="form-control text-center my-3 fs-4" />
-      <table className="table table-striped fs-4 bg-light shadow">
+      <input
+        type=""
+        onChange={handleSearch}
+        placeholder="Search Patient"
+        className="form-control text-center my-3 fs-4"
+      />
+      <table className="table table-striped fs-5 bg-light shadow">
         <thead>
-          <tr className="text-center fs-4 bg-primary shadow-sm text-white">
-            <th colSpan={9}>List Of Patients</th>
+          <tr className="text-center fs-4text-dark bg-info">
+            <th colSpan={11} className="p-3">List 0f Patients</th>
           </tr>
-          <tr className="bg-primary text-white">
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Age</th>
-            <th scope="col">Sex</th>
-            <th scope="col">Phone No.</th>
-            <th scope="col">Health Ins. ID</th>
-            <th scope="col">Email</th>
-            <th scope="col">Status</th>
-            <th scope="col">Actions</th>
+          <tr className="text-dark">
+            <th scope="col" className="p-3">#</th>
+            <th scope="col" className="p-3">Name</th>
+            <th scope="col" className="p-3 text-center">Sex</th>
+            <th scope="col" className="p-3 text-center">Age</th>
+            {username === "Admin" && <th scope="col" className="p-3">From</th>}
+            <th scope="col" className="p-3">Parent/Gurdian</th>
+            <th scope="col" className="p-3">Phone No.</th>
+            <th scope="col" className="p-3">Email</th>
+            <th scope="col" className="p-3">History</th>
+            <th scope="col" className="p-3">Status</th>
+            <th scope="col" className="p-3">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -86,31 +110,54 @@ const PatientDetails = () => {
                     " " +
                     patient.middle_name}
                 </td>
-                <td className="text-center p-3">{patient.age}</td>
-                <td className="text-center p-3">{patient.gender}</td>
+                <td className="p-3 text-center">{patient.sex}</td>
+                <td className="p-3 text-center">{patient.age}</td>
+                {username === "Admin" && <td className="p-3 text-capitalize">{patient.name}</td>}
+                <td className="p-3 text-capitalize">{patient.parent}</td>             
                 <td className="p-3">{patient.phone_no}</td>
-                <td className="p-3">{patient.health_id}</td>
                 <td className="p-3">{patient.email}</td>
-                {patient.status === "Approved" && <td className="p-3 text-success fw-bold">{patient.status}</td>}
-                {patient.status === "Rejected" && <td className="p-3 text-danger fw-bold">{patient.status}</td>}
-                {patient.status === "Pending" && <td className="p-3 text-warning fw-bold">{patient.status}</td>}
+                <td className="p-3 text-center">
+                <button
+                    type="button"
+                    onClick={(e) => handleMdHistory(patient.pat_id)}
+                    
+                    className="btn btn-sm btn-info"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title={`${patient.first_name} Medical History`}
+                  >
+                    <i className="bi bi-clock-history"></i>
+                  </button>
+                </td>
+                {patient.status === "Approved & Assigned" && (
+                  <td className="p-3 text-success fw-bold">{patient.status}</td>
+                )}
+                {patient.status === "Rejected" && (
+                  <td className="p-3 text-danger fw-bold">{patient.status}</td>
+                )}
+                {patient.status === "Pending" && (
+                  <td className="p-3 text-warning fw-bold">{patient.status}</td>
+                )}
+                {patient.status === null && (
+                  <td className="p-3 text-warning fw-bold">Not Scheduled</td>
+                )}
                 <td className="p-3">
                   <Link
-                    to={`/dashboard/view/patient/edit/` + patient.id}
+                    to={`/dashboard/view/patient/edit/${patient.pat_id}`}
                     title="Edit"
                     className="btn btn-sm btn-warning me-3"
                   >
                     <i className="bi bi-pencil-fill"></i>
                   </Link>
                   <button
-                    onClick={(e) => handleDelete(patient.id)}
+                    onClick={(e) => handleDelete(patient.pat_id)}
                     title="Delete"
                     className="btn btn-sm btn-danger me-3"
                   >
                     <i className="bi bi-trash"></i>
                   </button>
                   <Link
-                    to={`/dashboard/patient/schedule/` + patient.id}
+                    to={`/dashboard/patient/schedule/${patient.pat_id}`}
                     title="Schedule"
                     className="btn btn-sm btn-success"
                   >

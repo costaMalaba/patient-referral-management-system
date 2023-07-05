@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const DoctorDetails = () => {
+  const username = sessionStorage.getItem('username');
   const [doctors, setDoctors] = useState([]);
 
   const handleDelete = async (id) => {
@@ -31,6 +32,7 @@ const DoctorDetails = () => {
     getDoctors();
   }, []);
 
+
   const getDoctors = async () => {
     await axios
       .get("http://localhost:8800/get/doctor")
@@ -57,21 +59,21 @@ const DoctorDetails = () => {
   return (
     <div className="container-fluid p-3">
         <input type="" onChange={handleSearch} placeholder="Search Doctor" className="form-control text-center my-3 fs-4" />
-      <table className="table table-striped fs-4 bg-light shadow">
+      <table className="table table-striped fs-5 bg-light shadow">
         <thead>
-          <tr className="text-center fs-4 bg-primary shadow-sm text-white">
+          <tr className="text-center fs-4 bg-info text-dark">
             <th colSpan={10}>List Of Doctors</th>
           </tr>
-          <tr className="bg-primary text-white">
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Age</th>
-            <th scope="col">Sex</th>
-            <th scope="col">Specialization</th>
-            <th scope="col">Phone No.</th>
-            <th scope="col">Email</th>
-            <th scope="col">Username</th>
-            <th scope="col">Actions</th>
+          <tr className="text-dark">
+            <th scope="col" className="p-3">#</th>
+            <th scope="col" className="p-3">Name</th>
+            <th scope="col" className="p-3">Age</th>
+            <th scope="col" className="p-3">Sex</th>
+            <th scope="col" className="p-3">Hosptal Worked</th>
+            <th scope="col" className="p-3">Specialization</th>
+            <th scope="col" className="p-3">Phone No.</th>
+            <th scope="col" className="p-3">Email</th>
+            {username === "Admin" && <th scope="col" className="p-3">Actions</th>}
           </tr>
         </thead>
         <tbody>
@@ -86,15 +88,15 @@ const DoctorDetails = () => {
                     " " +
                     doctor.middle_name}
                 </td>
-                <td className="text-center p-3">{doctor.age}</td>
-                <td className="text-center p-3">{doctor.sex}</td>
+                <td className="p-3">{doctor.age}</td>
+                <td className="p-3">{doctor.sex}</td>
+                <td className="p-3 text-capitalize">{doctor.name}</td>
                 <td className="p-3">{doctor.specialization}</td>
                 <td className="p-3">{doctor.phone_no}</td>
                 <td className="p-3">{doctor.email}</td>
-                <td className="p-3">{doctor.username}</td>
-                <td className="p-3">
+                {username === "Admin" && <td className="p-3">
                   <Link
-                    to={`/dashboard/editDoctor/` + doctor.id}
+                    to={`/dashboard/editDoctor/${doctor.id}`}
                     className="btn btn-sm btn-warning me-3"
                   >
                     <i className="bi bi-pencil-fill"></i>
@@ -105,17 +107,18 @@ const DoctorDetails = () => {
                   >
                     <i className="bi bi-trash3"></i>
                   </button>
-                </td>
+                </td>}
               </tr>
             );
           })}
         </tbody>
       </table>
-      <Link to="/dashboard/doctor" className="px-0">
+      {username === "Admin" && <Link to="/dashboard/doctor" className="px-0">
         <button className="btn btn-lg btn-success">
           <i className="bi bi-plus-circle me-2"></i>Add Doctor
         </button>
-      </Link>
+      </Link>}
+      
     </div>
   );
 };

@@ -3,6 +3,7 @@ import axios from "axios";
 import moment from "moment";
 
 const PatientForDashboard = () => {
+  const username = sessionStorage.getItem('username');
     const [patients, setPatients] = useState([]);
     useEffect(() => {
         getPatients();
@@ -10,7 +11,7 @@ const PatientForDashboard = () => {
     
       const getPatients = async () => {
         await axios
-          .get("http://localhost:8800/result/patient")
+          .get(`http://localhost:8800/result/patients?term=${username}`)
           .then((res) => {
             if (res.data.Status === "Success") {
               setPatients(res.data.Result);
@@ -54,9 +55,12 @@ const PatientForDashboard = () => {
                     <td className="p-3">{patient.phone_no}</td>
                     <td className="p-3">{patient.email}</td>
                     <td className="p-3 text-center">{moment(patient.updated_at).format("DD-MM-YYYY")}</td>
-                    {patient.status === "Approved" && <td className="p-3 text-success fw-bold">{patient.status}</td>}
+                    {patient.status === "Approved & Assigned" && <td className="p-3 text-success fw-bold">{patient.status}</td>}
                     {patient.status === "Rejected" && <td className="p-3 text-danger fw-bold">{patient.status}</td>}
                     {patient.status === "Pending" && <td className="p-3 text-warning fw-bold">{patient.status}</td>}
+                    {patient.status === null && (
+                  <td className="p-3 text-warning fw-bold">Unscheduled</td>
+                )}
                   </tr>
                 );
               })}

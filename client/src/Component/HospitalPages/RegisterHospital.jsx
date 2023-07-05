@@ -3,29 +3,23 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import { v4 as uuid } from "uuid";
 
 const RegisterHospital = () => {
   const [inputs, setInputs] = useState({
-    first_name: "",
-    middle_name: "",
-    surname: "",
-    specialization: "",
-    age: "",
-    gender: "",
+    hos_id: uuid(),
+    hos_name: "",
+    hos_location: "",
     phone_no: "",
+    email: "",
+    address: "",
+    url: "",
     username: "",
     password: "",
-    email: "",
   });
-
-  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const handlePrint = () => {
-    window.print();
   };
 
   const navigate = useNavigate();
@@ -33,24 +27,24 @@ const RegisterHospital = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        "http://localhost:8800/api/doctor/register/",
+      await axios.post(
+        "http://localhost:8800/hospital/add",
         inputs
-      );
-      if (res.data.Status === "Success") {
-        navigate("/dashboard/view");
-        toast.success(res.data.Message);
-      } else {
-        navigate("/dashboard/doctor");
-        toast.warning(res.data.Message);
-      }
+      ).then(res => {
+        if (res.data.Status === "Success") {
+          toast.success(res.data.Message);
+          setTimeout(() => {
+            navigate("/dashboard/view/hospital");
+          },1500)
+        } else {
+          toast.warning(res.data.Message);
+          navigate("/dashboard/register/hospital");
+        }
+      })
     } catch (error) {
-      //console.log(error);
-      setError(error.response.data);
+      console.log(error);
     }
   };
-
-  console.log(inputs);
 
   return (
     <div className="conatiner p-5 m-5">
@@ -60,31 +54,30 @@ const RegisterHospital = () => {
       <div className="col-12">
         <form onSubmit={handleSubmit} className="form text-center">
           <h1 className="login mb-3">Hospital Registration Form</h1>
-          {error && toast.error(error)}
           <div className="row mb-5">
             <div className="col-6">
-              <label for="first_name" className="form-label fw-bold">
+              <label htmlFor="hos_name" className="form-label fw-bold">
                 Name:
               </label>
               <input
                 type="text"
-                className="form-control text-center"
-                id="first_name"
-                name="first_name"
+                className="form-control text-center text-uppercase"
+                id="hos_name"
+                name="hos_name"
                 onChange={handleChange}
                 required
               />
             </div>
 
             <div className="col-6">
-              <label for="middle_name" className="form-label fw-bold">
+              <label htmlFor="hos_location" className="form-label fw-bold">
                 Location:
               </label>
               <input
                 type="text"
-                className="form-control text-center"
-                id="middle_name"
-                name="middle_name"
+                className="form-control text-center text-uppercase"
+                id="hos_location"
+                name="hos_location"
                 onChange={handleChange}
                 required
               />
@@ -93,12 +86,12 @@ const RegisterHospital = () => {
 
           <div className="row mb-5">
             <div className="col-6">
-              <label for="phone_no" className="form-label fw-bold">
+              <label htmlFor="phone_no" className="form-label fw-bold">
                 Phone Number:
               </label>
               <input
                 type="text"
-                placeholder="eg. 075444.."
+                placeholder="start with: 255.."
                 className="form-control text-center"
                 id="phone_no"
                 name="phone_no"
@@ -108,7 +101,7 @@ const RegisterHospital = () => {
             </div>
 
             <div className="col-6">
-              <label for="email" className="form-label fw-bold">
+              <label htmlFor="email" className="form-label fw-bold">
                 Email:
               </label>
               <input
@@ -122,9 +115,39 @@ const RegisterHospital = () => {
             </div>
           </div>
 
+          <div className="row mb-5">
+          <div className="col-6">
+              <label htmlFor="address" className="form-label fw-bold">
+                Address:
+              </label>
+              <input
+                type="text"
+                className="form-control text-center"
+                id="address"
+                name="address"
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="col-6">
+              <label htmlFor="url" className="form-label fw-bold">
+                Website URL: <i>(Optional)</i>
+              </label>
+              <input
+                type="text"
+                className="form-control text-center"
+                id="url"
+                name="url"
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+
           <div className="row">
             <div className="col-6">
-              <label for="username" className="form-label fw-bold">
+              <label htmlFor="username" className="form-label fw-bold">
                 Username:
               </label>
               <input
@@ -138,7 +161,7 @@ const RegisterHospital = () => {
             </div>
 
             <div className="col-6">
-              <label for="password" className="form-label fw-bold">
+              <label htmlFor="password" className="form-label fw-bold">
                 Password:
               </label>
               <input
@@ -152,15 +175,8 @@ const RegisterHospital = () => {
             </div>
           </div>
 
-          <button className="btn btn-outline-success btn-lg fw-bold mt-4">
-            Register
-          </button>
-
-          <button
-            className="btn btn-outline-secondary ms-5 btn-lg fw-bold mt-4"
-            onClick={handlePrint}
-          >
-            <i className="bi bi-printer-fill"></i>
+          <button className="btn btn-success btn-lg fw-bold mt-4">
+            REGISTER
           </button>
         </form>
       </div>

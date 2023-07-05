@@ -2,20 +2,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import moment from "moment";
 
 const EditDoctor = () => {
-  const [data, setData] = useState({
-    first_name: "",
-    middle_name: "",
-    surname: "",
-    specialization: "",
-    age: "",
-    gender: "",
-    phone_no: "",
-    username: "",
-    password: "",
-    email: "",
-  });
+  const [data, setData] = useState([]);
 
   const handleChange = (e) => {
     setData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -29,19 +19,7 @@ const EditDoctor = () => {
     axios
       .get(`http://localhost:8800/doctor/${id}`)
       .then((res) => {
-        setData({
-          ...data,
-          first_name: res.data.Result[0].first_name,
-          middle_name: res.data.Result[0].middle_name,
-          surname: res.data.Result[0].surname,
-          specialization: res.data.Result[0].specialization,
-          age: res.data.Result[0].age,
-          gender: res.data.Result[0].gender,
-          phone_no: res.data.Result[0].phone_no,
-          username: res.data.Result[0].username,
-          password: res.data.Result[0].password,
-          email: res.data.Result[0].email,
-        });
+        setData(res.data.Result[0]);
       })
       .catch((err) => console.log(err));
   },[]);
@@ -49,15 +27,21 @@ const EditDoctor = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.put(
-        `http://localhost:8800/editDoctor/` + id,
+      await axios.put(
+        `http://localhost:8800/editDoctor/${id}`,
         data
-      );
-      navigate("/dashboard/view");
-      console.log(res);
-      toast.success("Doctor Updated Successfully!!");
+      ).then(res => {
+        if (res.data.Status === "Success") {
+          navigate("/dashboard/view");
+          toast.success("Doctor Updated Successfully!!");
+        } else {
+          navigate("/dashboard/view");
+          toast.success("Doctor Updated Successfully!!");
+        }
+      })
+     
     } catch (error) {
-      console.log(error);
+      console.eror(error);
     }
   };
 
@@ -73,7 +57,7 @@ const EditDoctor = () => {
           <h1 className="login mb-3">Update Doctor Here</h1>
           <div className="row mb-5">
             <div className="col-6">
-              <label for="first_name" className="form-label fw-bold">
+              <label htmlFor="first_name" className="form-label fw-bold">
                 First Name:
               </label>
               <input
@@ -88,7 +72,7 @@ const EditDoctor = () => {
             </div>
 
             <div className="col-6">
-              <label for="middle_name" className="form-label fw-bold">
+              <label htmlFor="middle_name" className="form-label fw-bold">
                 Midlle Name:
               </label>
               <input
@@ -105,7 +89,7 @@ const EditDoctor = () => {
 
           <div className="row mb-5">
             <div className="col-6">
-              <label for="surname" className="form-label fw-bold">
+              <label htmlFor="surname" className="form-label fw-bold">
                 Surname:
               </label>
               <input
@@ -120,16 +104,15 @@ const EditDoctor = () => {
             </div>
 
             <div className="col-6">
-              <label for="age" className="form-label fw-bold">
-                Age:
+              <label htmlFor="dob" className="form-label fw-bold">
+                Date of Birth:
               </label>
               <input
-                type="number"
-                min={0}
+                type="date"
                 className="form-control text-center"
-                name="age"
-                id="age"
-                value={data.age}
+                name="dob"
+                id="dob"
+                value={moment(data.dob).format('YYYY-MM-DD')}
                 onChange={handleChange}
                 required
               />
@@ -138,11 +121,11 @@ const EditDoctor = () => {
 
           <div className="row mb-5">
             <div className="col-6">
-              <label for="gender" className="form-label fw-bold">
-                Gender:
+              <label htmlFor="sex" className="form-label fw-bold">
+                Sex:
               </label>
-              <select className="form-select text-center" id="gender" name="gender" value={data.gender} onChange={handleChange} required>
-                <option defaultValue={"Uknown"} disabled>
+              <select className="form-select text-center" id="sex" name="sex" value={data.sex} onChange={handleChange} required>
+                <option className="text-muted" defaultValue={"Uknown"}>
                   Select Here
                 </option>
                 <option value={"M"}>MALE</option>
@@ -151,7 +134,7 @@ const EditDoctor = () => {
             </div>
 
             <div className="col-6">
-              <label for="phone_no" className="form-label fw-bold">
+              <label htmlFor="phone_no" className="form-label fw-bold">
                 Phone Number:
               </label>
               <input
@@ -169,7 +152,7 @@ const EditDoctor = () => {
 
           <div className="row mb-5">
           <div className="col-6">
-              <label for="specialization" className="form-label fw-bold">
+              <label htmlFor="specialization" className="form-label fw-bold">
                 Specialization:
               </label>
               <select
@@ -180,7 +163,7 @@ const EditDoctor = () => {
                 onChange={handleChange}
                 required
               >
-                <option selected defaultValue={"Uknown"} disabled>
+                <option className="text-muted" defaultValue={"Uknown"}>
                   Select Here
                 </option>
                 <option value={"Cardiology"}>Cardiology</option>
@@ -192,7 +175,7 @@ const EditDoctor = () => {
             </div>
 
             <div className="col-6">
-              <label for="email" className="form-label fw-bold">
+              <label htmlFor="email" className="form-label fw-bold">
                 Email:
               </label>
               <input
@@ -207,39 +190,7 @@ const EditDoctor = () => {
             </div>
           </div>
 
-          <div className="row">
-            <div className="col-6">
-              <label for="username" className="form-label fw-bold">
-                Username:
-              </label>
-              <input
-                type="text"
-                className="form-control text-center"
-                id="username"
-                name="username"
-                value={data.username}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="col-6">
-              <label for="password" className="form-label fw-bold">
-                Password:
-              </label>
-              <input
-                type="password"
-                className="form-control text-center"
-                id="password"
-                name="password"
-                value={data.password}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          </div>
-
-          <button className="btn btn-outline-warning btn-lg fw-bold mt-4">
+          <button className="btn btn-warning btn-lg fw-bold mt-4">
             Update
           </button>
         </form>

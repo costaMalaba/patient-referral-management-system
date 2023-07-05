@@ -1,11 +1,13 @@
 import con from "../db/database.js";
 import dotenv from "dotenv";
+import moment from "moment";
 import sendMail from "../services/sendEmail.js";
+import sendSMS from "../services/sendSMS.js";
 
 dotenv.config();
 
 export const getAllDoctor = (req, res) => {
-  const q = "SELECT * FROM doctor";
+  const q = "SELECT *, d.email AS email, d.phone_no AS phone_no, FLOOR(DATEDIFF(CURDATE(), dob)/365) AS age, d.id As id FROM doctor d JOIN hospital h ON d.hospital_id=h.id";
   con.query(q, (err, data) => {
     if (err) {
       return res.json({ Error: err });
@@ -52,9 +54,9 @@ export const reportDoctors = (req, res) => {
 
 export const addDoctor = (req, res) => {
   // CHECKING EXISTING DOCTOR
-  const q1 = "SELECT * FROM doctor WHERE email = ? OR username = ?";
-  con.query(q1, [req.body.email, req.body.username], (error, data) => {
-    if (error) res.json({ Message: "Error in Querying!!" });
+  const q1 = "SELECT * FROM doctor WHERE email = ?";
+  con.query(q1, [req.body.email], (error, data) => {
+    if (error) res.json({ Message: "Error in Querying!!", Result: error });
     if (data.length > 0)
       return res.json({
         Status: "Error",
@@ -62,31 +64,39 @@ export const addDoctor = (req, res) => {
       });
     else {
       const q =
-        "INSERT INTO doctor (`id`, `first_name`, `middle_name`, `surname`, `specialization`, `age`, `sex`, `username`, `password`, `email`, `phone_no`) VALUES (?)";
+        "INSERT INTO doctor (`id`, `hospital_id`, `first_name`, `middle_name`, `surname`, `specialization`, `dob`, `sex`, `email`, `phone_no`) VALUES (?)";
 
       const {
         doctor_id,
+        hospital_id,
         first_name,
         middle_name,
         surname,
         specialization,
-        age,
-        gender,
-        username,
-        password,
+        dob,
+        sex,
         email,
         phone_no,
       } = req.body;
 
-      const doctor = [ doctor_id, first_name, middle_name, surname, specialization, age, gender, username, password, email, phone_no ];
-
-      const text = `Dear Dr. ${req.body.surname}, Now you are successfully registered in referral system.`;
-      const subject = "PRMS - DOCTOR REGISTRATION";
+      const doctor = [ doctor_id, hospital_id, first_name, middle_name, surname, specialization, dob, sex, email, phone_no ];
 
       con.query(q, [doctor], (err, result) => {
         if (err) {
           return res.json({ Error: "Error in Query", Result: err });
         } else {
+          // Send SMS to Doctor
+          const options = {
+            to: [`+${phone_no}`],
+            message: `Dear Dr. ${req.body.surname}, Now you are successfully registered in referral system.`,
+          };
+
+          sendSMS(options);
+
+          // Send Email to Doctor
+          const text = `Dear Dr. ${req.body.surname}, Now you are successfully registered in referral system.`;
+          const subject = "PRMS - DOCTOR REGISTRATION";
+
           sendMail(req.body.email, text, subject);
           return res.status(200).json({
             Status: "Success",
@@ -100,22 +110,23 @@ export const addDoctor = (req, res) => {
 };
 
 export const editDoctor = (req, res) => {
-  const id = req.params.id;
   const q =
-    "UPDATE doctor SET first_name = ?, middle_name = ?, surname = ?, specialization = ?, age = ?, gender = ?, username = ?, email = ?, phone_no = ? WHERE id = ?";
+    "UPDATE doctor SET first_name = ?, middle_name = ?, surname = ?, specialization = ?, dob = ?, sex = ?, email = ?, phone_no = ? WHERE id = ?";
+    const { id } = req.params;
+    const { first_name, middle_name, surname, specialization, dob, sex, email, phone_no } = req.body;
+    const formattedDob = moment(dob).format('YYYY-MM-DD');
 
   con.query(
     q,
     [
-      req.body.first_name,
-      req.body.middle_name,
-      req.body.surname,
-      req.body.specialization,
-      req.body.age,
-      req.body.gender,
-      req.body.username,
-      req.body.email,
-      req.body.phone_no,
+      first_name,
+      middle_name,
+      surname,
+      specialization,
+      formattedDob,
+      sex,
+      email,
+      phone_no,
       id,
     ],
     (err, data) => {

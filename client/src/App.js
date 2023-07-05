@@ -20,6 +20,10 @@ import EditHospital from "./Component/HospitalPages/EditHospital";
 import HospitalDetails from "./Component/HospitalPages/HospitalDetails";
 import ScheduleDetails from "./Component/PatientPages/ScheduleDetails";
 import EditSchedule from "./Component/PatientPages/EditSchedule";
+import AddMedicalHistory from "./Component/MedicalHitory/AddMedicalHistory";
+import MedicalHistoryProfile from "./Component/MedicalHitory/MedicalHistoryProfile";
+import MedicalHistoryDetails from "./Component/MedicalHitory/MedicalHistoryDetails";
+import ScheduleSentDetails from "./Component/PatientPages/ScheduleSentDetails";
 
 const router = createBrowserRouter([
   {
@@ -38,13 +42,15 @@ const router = createBrowserRouter([
         path: "/dashboard/view",
         element: <DoctorDetails />
       },
-      {
-        path: "/dashboard/view/patient",
-        element: <PatientDetails />
-      },
+
+      // Schedules Paths
       {
         path: "/dashboard/view/schedule",
         element: <ScheduleDetails />
+      },
+      {
+        path: "/dashboard/view/schedule/sent",
+        element: <ScheduleSentDetails />
       },
       {
         path: "/dashboard/schedule/edit/:id",
@@ -54,14 +60,22 @@ const router = createBrowserRouter([
         path: "/dashboard/patient/schedule/:id",
         element: <Schedule />
       },
+
+      // Patients Paths
       {
         path: "/dashboard/view/patient/add",
         element: <PatientRegister />
       },
       {
+        path: "/dashboard/view/patient",
+        element: <PatientDetails />
+      },
+      {
         path: "/dashboard/view/patient/edit/:id",
         element: <EditPatient />
       },
+
+      // Doctors Paths
       {
         path: "/dashboard/doctor",
         element: <DoctorRegister />,
@@ -70,6 +84,8 @@ const router = createBrowserRouter([
         path: "/dashboard/editDoctor/:id",
         element: <EditDoctor />,
       },
+
+      // Hospitals Paths
       {
         path: "/dashboard/register/hospital",
         element: <RegisterHospital />
@@ -82,10 +98,26 @@ const router = createBrowserRouter([
         path: "/dashboard/view/hospital",
         element: <HospitalDetails />,
       },
+
+      // Referrals Paths
       {
-        path: "/dashboard/create/referral",
+        path: "/dashboard/create/referral/:id",
         element: <CreateReferral />,
-      }
+      },
+
+      // Medical Hitories Paths
+      {
+        path: "/dashboard/add/history/:id",
+        element: <AddMedicalHistory />,
+      },
+      {
+        path: "/dashboard/history/view",
+        element: <MedicalHistoryDetails />,
+      },
+      {
+        path: "/dashboard/add/history/profile/:id",
+        element: <MedicalHistoryProfile />,
+      },
       
     ]
   }
