@@ -72,7 +72,7 @@ const HospitalDetails = () => {
             <th scope="col" className="p-3">Phone No.</th>
             <th scope="col" className="p-3">Website URL</th>
             <th scope="col" className="p-3">Username</th>
-            {username ==="Admin" && <th scope="col" className="p-3">Actions</th>}
+            {(username ==="Admin") && <th scope="col" className="p-3">Actions</th>}
           </tr>
         </thead>
         <tbody>
