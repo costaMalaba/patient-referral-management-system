@@ -26,6 +26,7 @@ Make sure you have the following software installed on your system:
 1. Clone the repository:
 
 git clone https://github.com/costaMalaba/patient-referral-management-system.git
+
 2. Install the dependencies for both the client and server:
 
 cd client
